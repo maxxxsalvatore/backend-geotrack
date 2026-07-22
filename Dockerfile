@@ -2,8 +2,8 @@ FROM node:20-alpine
 
 WORKDIR /app
 
-# Install dependencies yang dibutuhkan argon2 & native modules
-RUN apk add --no-co-cache python3 make g++
+# Install build dependencies untuk argon2 & native modules
+RUN apk add --no-cache python3 make g++
 
 COPY package*.json ./
 COPY prisma ./prisma/
