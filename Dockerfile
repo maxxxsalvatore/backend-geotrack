@@ -8,7 +8,8 @@ RUN apk add --no-cache python3 make g++
 COPY package*.json ./
 COPY prisma ./prisma/
 
-RUN npm install
+# Tambahkan flag --legacy-peer-deps di sini
+RUN npm install --legacy-peer-deps
 
 COPY . .
 
