@@ -1,0 +1,76 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum RoleType {
+  SUPER_ADMIN
+  MANAGEMENT
+  SUPERVISOR
+  VIEWER
+}
+
+enum DeviceStatus {
+  LIVE
+  DELAYED
+  OFFLINE
+  GPS_OFF
+  PERMISSION_OFF
+  DEVICE_OFFLINE
+  NEVER_CONNECTED
+}
+
+model User {
+  id           String      @id @default(uuid())
+  email        String      @unique
+  passwordHash String
+  fullName     String
+  isActive     Boolean     @default(true)
+  departmentId String?
+  department   Department? @relation(fields: [departmentId], references: [id])
+  createdAt    DateTime    @default(now())
+
+  @@map("users")
+}
+
+model Department {
+  id          String               @id @default(uuid())
+  name        String               @unique
+  code        String               @unique
+  accessCodes DivisionAccessCode[]
+  users       User[]
+  createdAt   DateTime             @default(now())
+
+  @@map("departments")
+}
+
+model DivisionAccessCode {
+  id           String     @id @default(uuid())
+  code         String     @unique
+  roleName     String
+  departmentId String
+  department   Department @relation(fields: [departmentId], references: [id])
+  isActive     Boolean    @default(true)
+  createdAt    DateTime   @default(now())
+
+  @@map("division_access_codes")
+}
+
+model LocationPoint {
+  id               BigInt   @id @default(autoincrement())
+  staffName        String
+  accessCode       String
+  latitude         Float
+  longitude        Float
+  accuracy         Float
+  batteryLevel     Float
+  gpsEnabled       Boolean  @default(true)
+  permissionStatus String   @default("GRANTED")
+  deviceTimestamp  DateTime
+  serverTimestamp  DateTime @default(now())
+
+  @@map("location_points")
+}
