@@ -95,3 +95,14 @@ model Geofence {
   radiusInMeters Float
   createdAt      DateTime @default(now())
 }
+
+model Attendance {
+  id          String   @id @default(uuid())
+  userId      String
+  geofenceId  String
+  checkInTime DateTime @default(now())
+  latitude    Float
+  longitude   Float
+  status      String   // "SUCCESS" / "REJECTED"
+  createdAt   DateTime @default(now())
+}

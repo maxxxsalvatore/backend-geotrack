@@ -4,9 +4,10 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { LocationModule } from './location/location.module';
 import { GeofenceModule } from './geofence/geofence.module';
+import { AttendanceModule } from './attendance/attendance.module';
 
 @Module({
-  imports: [AuthModule, LocationModule, GeofenceModule],
+  imports: [AuthModule, LocationModule, GeofenceModule, AttendanceModule],
   controllers: [AppController],
   providers: [AppService],
 })
