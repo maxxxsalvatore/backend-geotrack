@@ -1,28 +1,35 @@
 import { Injectable } from '@nestjs/common';
 import { CreateLocationDto } from './dto/create-location.dto';
+import { PrismaService } from '../prisma/prisma.service'; // Sesuaikan path PrismaService kamu
 
 @Injectable()
 export class LocationService {
-  private locationLogs = [];
+  constructor(private readonly prisma: PrismaService) {}
 
-  create(userId: string, createLocationDto: CreateLocationDto) {
-    const newLog = {
-      id: `loc-${Date.now()}`,
-      userId,
-      ...createLocationDto,
-      createdAt: new Date().toISOString(),
-    };
-    this.locationLogs.push(newLog);
+  async create(userId: string, createLocationDto: CreateLocationDto) {
+    const newLocation = await this.prisma.location.create({
+      data: {
+        userId,
+        latitude: createLocationDto.latitude,
+        longitude: createLocationDto.longitude,
+        note: createLocationDto.note,
+      },
+    });
+
     return {
-      message: 'Koordinat lokasi berhasil dicatat!',
-      data: newLog,
+      message: 'Koordinat lokasi berhasil dicatat di database!',
+      data: newLocation,
     };
   }
 
-  findAll() {
+  async findAll() {
+    const logs = await this.prisma.location.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+
     return {
-      total: this.locationLogs.length,
-      data: this.locationLogs,
+      total: logs.length,
+      data: logs,
     };
   }
 }

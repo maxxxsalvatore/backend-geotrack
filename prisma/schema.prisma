@@ -74,3 +74,15 @@ model LocationPoint {
 
   @@map("location_points")
 }
+
+model Location {
+  id        String   @id @default(uuid())
+  userId    String
+  latitude  Float
+  longitude Float
+  note      String?
+  createdAt DateTime @default(now())
+
+  // Opsional: Jika model User sudah ada di schema kamu, bisa di-connect dengan relation
+  // user   User     @relation(fields: [userId], references: [id])
+}
