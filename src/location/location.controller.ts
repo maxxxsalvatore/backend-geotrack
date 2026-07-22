@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, UseGuards, Request } from '@nestjs/common'
 import { LocationService } from './location.service';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard'; // Sesuaikan path guard auth kamu
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @ApiTags('Location Tracking')
 @ApiBearerAuth()
