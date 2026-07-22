@@ -1,27 +1,23 @@
-import { Controller, Get, Post, Body, UseGuards, Request } from '@nestjs/common';
-import { LocationService } from './location.service';
-import { CreateLocationDto } from './dto/create-location.dto';
+import { Controller, Get, Post, Body } from '@nestjs/common';
+import { GeofenceService } from './geofence.service';
+import { CreateGeofenceDto } from './dto/create-geofence.dto';
 import { ApiBearerAuth, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard'; // Sekarang file ini sudah ada!
 
-@ApiTags('Location Tracking')
+@ApiTags('Geofence Management')
 @ApiBearerAuth()
-@UseGuards(JwtAuthGuard) // Mengunci seluruh endpoint lokasi dengan JWT
-@Controller('location')
-export class LocationController {
-  constructor(private readonly locationService: LocationService) {}
+@Controller('geofence')
+export class GeofenceController {
+  constructor(private readonly geofenceService: GeofenceService) {}
 
   @Post()
-  @ApiOperation({ summary: 'Kirim koordinat lokasi tim lapangan' })
-  create(@Request() req, @Body() createLocationDto: CreateLocationDto) {
-    // Ambil userId otomatis dari token JWT user yang sedang login
-    const userId = req.user?.id || req.user?.userId || 'user-unknown';
-    return this.locationService.create(userId, createLocationDto);
+  @ApiOperation({ summary: 'Buat area geofence operasional baru' })
+  create(@Body() createGeofenceDto: CreateGeofenceDto) {
+    return this.geofenceService.create(createGeofenceDto);
   }
 
   @Get()
-  @ApiOperation({ summary: 'Ambil semua riwayat lokasi' })
+  @ApiOperation({ summary: 'Ambil daftar seluruh area geofence' })
   findAll() {
-    return this.locationService.findAll();
+    return this.geofenceService.findAll();
   }
 }
