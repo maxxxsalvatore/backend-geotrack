@@ -1,12 +1,24 @@
 import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsNumber, IsString } from 'class-validator';
 
 export class CheckInDto {
-  @ApiProperty({ example: 'ID_GEOFENCE_DARI_DB', description: 'ID Area Geofence lokasi presensi' })
+  @ApiProperty({ description: 'ID User / Staff yang melakukan presensi', example: 'staff-001' })
+  @IsString()
+  @IsNotEmpty()
+  userId: string;
+
+  @ApiProperty({ description: 'ID Geofence tujuan presensi' })
+  @IsString()
+  @IsNotEmpty()
   geofenceId: string;
 
-  @ApiProperty({ example: -6.200000, description: 'Latitude posisi user saat check-in' })
+  @ApiProperty({ description: 'Koordinat Latitude', example: -6.174444 })
+  @IsNumber()
+  @IsNotEmpty()
   latitude: number;
 
-  @ApiProperty({ example: 106.816666, description: 'Longitude posisi user saat check-in' })
+  @ApiProperty({ description: 'Koordinat Longitude', example: 106.829444 })
+  @IsNumber()
+  @IsNotEmpty()
   longitude: number;
 }
