@@ -4,10 +4,17 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { LocationModule } from './location/location.module';
 import { GeofenceModule } from './geofence/geofence.module';
-import { AttendanceModule } from './attendance/attendance.module';
+import { PrismaModule } from './prisma/prisma.module';
+import { AttendanceModule } from './attendance/attendance.module'; // 1. Import modul attendance
 
 @Module({
-  imports: [AuthModule, LocationModule, GeofenceModule, AttendanceModule],
+  imports: [
+    AuthModule,
+    LocationModule,
+    GeofenceModule,
+    PrismaModule,
+    AttendanceModule, // 2. Tambahkan di sini
+  ],
   controllers: [AppController],
   providers: [AppService],
 })
