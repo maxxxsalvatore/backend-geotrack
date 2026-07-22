@@ -4,12 +4,11 @@ import { AppModule } from './app.module';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Izinkan Frontend dari domain kamu untuk mengakses API Backend
   app.enableCors({
     origin: [
       'https://trackinginternal.com',
       'https://www.trackinginternal.com',
-      'http://localhost:3000', // Untuk kebutuhan testing lokal
+      'http://localhost:3000',
     ],
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
     credentials: true,
@@ -17,6 +16,6 @@ async function bootstrap() {
 
   const port = process.env.PORT || 8080;
   await app.listen(port);
-  console.log(`🚀 Application is running on port: ${port}`);
+  console.log(`🚀 Server running on port: ${port}`);
 }
 bootstrap();
