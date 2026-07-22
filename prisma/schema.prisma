@@ -86,3 +86,12 @@ model Location {
   // Opsional: Jika model User sudah ada di schema kamu, bisa di-connect dengan relation
   // user   User     @relation(fields: [userId], references: [id])
 }
+
+model Geofence {
+  id             String   @id @default(uuid())
+  name           String
+  latitude       Float
+  longitude      Float
+  radiusInMeters Float
+  createdAt      DateTime @default(now())
+}

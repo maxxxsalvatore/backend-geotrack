@@ -1,34 +1,36 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateGeofenceDto } from './dto/create-geofence.dto';
 import { CheckGeofenceDto } from './dto/check-geofence.dto';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class GeofenceService {
-  private geofences = [];
+  constructor(private prisma: PrismaService) {}
 
-  create(createGeofenceDto: CreateGeofenceDto) {
-    const newGeofence = {
-      id: `geo-${Date.now()}`,
-      ...createGeofenceDto,
-      createdAt: new Date().toISOString(),
-    };
-    this.geofences.push(newGeofence);
+  async create(createGeofenceDto: CreateGeofenceDto) {
+    const newGeofence = await this.prisma.geofence.create({
+      data: createGeofenceDto,
+    });
+
     return {
-      message: 'Area Geofence berhasil dibuat!',
+      message: 'Area Geofence berhasil dibuat dan disimpan ke database!',
       data: newGeofence,
     };
   }
 
-  findAll() {
+  async findAll() {
+    const geofences = await this.prisma.geofence.findMany({
+      orderBy: { createdAt: 'desc' },
+    });
+
     return {
-      total: this.geofences.length,
-      data: this.geofences,
+      total: geofences.length,
+      data: geofences,
     };
   }
 
-  // Rumus Haversine untuk menghitung jarak antara dua koordinat (dalam meter)
   private calculateDistance(lat1: number, lon1: number, lat2: number, lon2: number): number {
-    const R = 6371e3; // Radius bumi dalam meter
+    const R = 6371e3;
     const rad = Math.PI / 180;
     const dLat = (lat2 - lat1) * rad;
     const dLon = (lon2 - lon1) * rad;
@@ -38,14 +40,16 @@ export class GeofenceService {
       Math.cos(lat1 * rad) * Math.cos(lat2 * rad) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
 
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-    return R * c; // Hasil dalam meter
+    return R * c;
   }
 
-  checkInside(dto: CheckGeofenceDto) {
-    const geofence = this.geofences.find((g) => g.id === dto.geofenceId);
+  async checkInside(dto: CheckGeofenceDto) {
+    const geofence = await this.prisma.geofence.findUnique({
+      where: { id: dto.geofenceId },
+    });
 
     if (!geofence) {
-      throw new NotFoundException('Geofence ID tidak ditemukan!');
+      throw new NotFoundException('Geofence ID tidak ditemukan di database!');
     }
 
     const distanceInMeters = this.calculateDistance(
