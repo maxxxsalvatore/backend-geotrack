@@ -1,17 +1,18 @@
 import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
 import { AuthService } from './auth.service';
 import { AuthController } from './auth.controller';
+import { JwtStrategy } from './jwt.strategy'; // Import ini
+import { JwtModule } from '@nestjs/jwt';
 
 @Module({
   imports: [
     JwtModule.register({
-      global: true,
-      secret: process.env.JWT_SECRET || 'rahasiasuperaman123',
-      signOptions: { expiresIn: '7d' }, // Token berlaku 7 hari
+      secret: process.env.JWT_SECRET || 'supersecretkey',
+      signOptions: { expiresIn: '1d' },
     }),
   ],
   controllers: [AuthController],
-  providers: [AuthService],
+  providers: [AuthService, JwtStrategy], // Pastikan JwtStrategy ada di sini!
+  exports: [AuthService],
 })
 export class AuthModule {}
