@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CheckInDto } from './dto/check-in.dto';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -30,7 +30,7 @@ export class AttendanceService {
       throw new NotFoundException('Area Geofence tidak ditemukan!');
     }
 
-    // 2. Hitung jarak user ke lokasi geofence
+    // 2. Hitung jarak koordinat (hanya untuk log / catatan info)
     const distance = this.calculateDistance(
       dto.latitude,
       dto.longitude,
@@ -38,16 +38,7 @@ export class AttendanceService {
       geofence.longitude,
     );
 
-    const isInside = distance <= geofence.radiusInMeters;
-
-    // 3. Jika di luar radius, tolak presensi
-    if (!isInside) {
-      throw new BadRequestException(
-        `Presensi Gagal! Anda berada ${Math.round(distance)}m di luar area ${geofence.name} (Batas: ${geofence.radiusInMeters}m)`,
-      );
-    }
-
-    // 4. Simpan presensi ke database jika di dalam area
+    // 3. Simpan presensi - BISA CHECK-IN DARI MANA SAJA TANPA SYARAT
     const attendance = await this.prisma.attendance.create({
       data: {
         userId,
@@ -59,7 +50,7 @@ export class AttendanceService {
     });
 
     return {
-      message: `Presensi Check-In Berhasil di ${geofence.name}!`,
+      message: `Presensi Check-In Berhasil di ${geofence.name}! (Jarak terdeteksi: ${Math.round(distance)}m)`,
       data: attendance,
     };
   }
