@@ -5,18 +5,19 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  // Enable CORS agar bisa diakses dari frontend mana pun
   app.enableCors();
 
-  // Konfigurasi Swagger UI
+  // Konfigurasi Swagger
   const config = new DocumentBuilder()
     .setTitle('GeoTrack Backend API')
     .setDescription('Dokumentasi API untuk Geotrack Operations & Authentication')
     .setVersion('1.0')
-    .addBearerAuth() // Tambahkan dukungan JWT Bearer token
+    .addBearerAuth()
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
+  
+  // Route /docs dipasang di sini
   SwaggerModule.setup('docs', app, document);
 
   const port = process.env.PORT || 8080;
